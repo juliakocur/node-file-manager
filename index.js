@@ -1,9 +1,12 @@
 import { getUserName } from './src/args.js';
+import { getCurrentDirectory } from './src/directory.js';
+import { handleCommand } from './src/handle.js';
 import * as readline from 'node:readline/promises';
 const userName = getUserName();
 
 const welcomeUser = () => {
-    console.log(`Welcome to the File Manager, ${userName}!`)
+    console.log(`Welcome to the File Manager, ${userName}!`);
+    getCurrentDirectory();
 };
 
 const rl = readline.createInterface({
@@ -14,9 +17,8 @@ const rl = readline.createInterface({
 
 const exitUser = () => {
     console.log(`Thank you for using File Manager, ${userName}, goodbye!`);
-    rl.close();
     process.exit(0);
-}
+};
 
 rl.on('line', (chunk) => {
     const command = chunk.trim();
@@ -24,6 +26,13 @@ rl.on('line', (chunk) => {
     if (command === '.exit' ) {
         exitUser();
     } else {
+        try {
+            handleCommand(command);
+        } catch (error) {
+            console.log('Invalid input');
+        }
+
+        getCurrentDirectory();
         rl.prompt();
     }
 });
