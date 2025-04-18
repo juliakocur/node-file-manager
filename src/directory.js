@@ -3,6 +3,7 @@ import path from 'node:path';
 
 let currentDir = os.homedir();
 process.chdir(currentDir);
+
 export const rootDir = path.parse(currentDir).root;
 
 export const getCurrentDirectory = () => {

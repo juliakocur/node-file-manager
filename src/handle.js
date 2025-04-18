@@ -13,6 +13,13 @@ export const handleCommand = (input) => {
         changeDirectory(args[0]);
         break;
 
+        case 'up':
+            if (args.length !== 0) {
+                throw new Error('Invalid input');
+            }
+            goUp();
+            break;
+
         default:
         console.error('Invalid input');
     }
@@ -29,4 +36,22 @@ const changeDirectory = (input) => {
     } catch {
         console.log('Operation failed');
     }
-}
+};
+
+export const goUp = () => {
+    const parentDir = path.resolve(process.cwd(), '..');
+
+    try {
+        if (
+            parentDir.startsWith(rootDir) 
+            && fs.statSync(parentDir).isDirectory 
+            && fs.existsSync(parentDir)
+        ) {
+            process.chdir(parentDir);
+        } else {
+            throw new Error();
+        }
+    } catch {
+        console.log('Operation failed');
+    }
+};
