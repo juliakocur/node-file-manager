@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { writeFile } from 'node:fs/promises';
 import { mkdir as asyncMkdir } from 'node:fs/promises';
+import { rename as asyncRename, access } from 'node:fs/promises';
+import {createReadStream, createWriteStream} from 'fs';
 
 export const cat = (filePath) => {
     const pathResolved = path.isAbsolute(filePath) ?
@@ -38,4 +40,31 @@ export const addNewDir = async (dirName) => {
     } catch {
         console.log('Operation failed');
     }
-}
+};
+
+export const renameFile = async (fileName, newName) => {
+    const oldPath = path.isAbsolute(fileName) ? fileName : path.resolve(process.cwd(), fileName);
+    const newPath = path.resolve(path.dirname(oldPath), newName);
+    try {
+        await access(oldPath);
+        await asyncRename(oldPath, newPath);
+    } catch {
+        console.log('Operation failed');
+    }
+};
+
+export const copyFile = (sourcePath, destPath) => {
+    const filePath = path.isAbsolute(sourcePath) ? sourcePath : path.resolve(process.cwd(), sourcePath);
+    const dest = path.isAbsolute(destPath) ? destPath : path.resolve(process.cwd(), destPath);
+    try {
+        if (fs.existsSync(dest)) {
+            throw new Error()
+        }
+        const readStream = createReadStream(filePath);
+        const writeStream = createWriteStream(dest);
+      
+        readStream.pipe(writeStream);
+    } catch {
+        console.log('Operation failed');
+    }
+};
