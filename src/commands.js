@@ -78,3 +78,12 @@ export const moveFile = async (sourcePath, destPath) => {
         console.log('Operation failed');
     }
 };
+
+export const deleteFile = async (filePath) => {    
+    const pathResolved = path.isAbsolute(filePath) ? filePath : path.resolve(process.cwd(), filePath);
+    try {
+        await unlink(pathResolved);
+    } catch {
+        console.log('Operation failed');
+    }
+};
