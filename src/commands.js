@@ -1,9 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { writeFile } from 'node:fs/promises';
+import { writeFile, unlink } from 'node:fs/promises';
 import { mkdir as asyncMkdir } from 'node:fs/promises';
 import { rename as asyncRename, access } from 'node:fs/promises';
 import {createReadStream, createWriteStream} from 'fs';
+import { pipeline } from 'node:stream/promises';
 
 export const cat = (filePath) => {
     const pathResolved = path.isAbsolute(filePath) ?
@@ -53,17 +54,26 @@ export const renameFile = async (fileName, newName) => {
     }
 };
 
-export const copyFile = (sourcePath, destPath) => {
+export const copyFile = async (sourcePath, destPath) => {
     const filePath = path.isAbsolute(sourcePath) ? sourcePath : path.resolve(process.cwd(), sourcePath);
     const dest = path.isAbsolute(destPath) ? destPath : path.resolve(process.cwd(), destPath);
     try {
         if (fs.existsSync(dest)) {
             throw new Error()
         }
-        const readStream = createReadStream(filePath);
-        const writeStream = createWriteStream(dest);
-      
-        readStream.pipe(writeStream);
+        const readStream = fs.createReadStream(filePath);
+        const writeStream = fs.createWriteStream(dest);
+        await pipeline(readStream, writeStream);
+    } catch {
+        console.log('Operation failed');
+    }
+};
+
+export const moveFile = async (sourcePath, destPath) => {    
+    const filePath = path.isAbsolute(sourcePath) ? sourcePath : path.resolve(process.cwd(), sourcePath);
+    try {
+        await copyFile(sourcePath, destPath);
+        await unlink(filePath);
     } catch {
         console.log('Operation failed');
     }
