@@ -87,18 +87,6 @@ export const deleteFile = async (filePath) => {
     }
 };
 
-
-// const files = await fs.readdir(currentDir, { withFileTypes: true });
-//         const sortedFiles = files.sort((a, b) => {
-//           if (a.isDirectory() && !b.isDirectory()) return -1;
-//           if (!a.isDirectory() && b.isDirectory()) return 1;
-//           return a.name.localeCompare(b.name);
-//         });
-//         console.table(sortedFiles.map((file, index) => ({
-//           Name: file.name,
-//           Type: file.isDirectory() ? 'directory' : 'file'
-//         })));
-
 export const createDirList = async () => {
     try {
         const currentDir = process.cwd();
