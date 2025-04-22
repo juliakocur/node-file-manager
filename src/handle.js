@@ -1,10 +1,14 @@
 import { goUp, changeDirectory } from './directory.js';
-import { cat, addFile, addNewDir, renameFile, copyFile, moveFile, deleteFile } from './commands.js';
+import { cat, addFile, addNewDir, renameFile, copyFile, moveFile, deleteFile,createDirList } from './commands.js';
 
 export const handleCommand = (input) => {
     const [command, ...args] = input.split(' ');
 
     switch (command) {
+        case 'ls':
+            createDirList();
+            break;
+
         case 'rm':
             if (args.length !== 1) {
                 throw new Error('Invalid input');

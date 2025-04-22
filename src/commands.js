@@ -1,9 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { writeFile, unlink } from 'node:fs/promises';
+import { writeFile, unlink, readdir } from 'node:fs/promises';
 import { mkdir as asyncMkdir } from 'node:fs/promises';
 import { rename as asyncRename, access } from 'node:fs/promises';
-import {createReadStream, createWriteStream} from 'fs';
 import { pipeline } from 'node:stream/promises';
 
 export const cat = (filePath) => {
@@ -87,3 +86,37 @@ export const deleteFile = async (filePath) => {
         console.log('Operation failed');
     }
 };
+
+
+// const files = await fs.readdir(currentDir, { withFileTypes: true });
+//         const sortedFiles = files.sort((a, b) => {
+//           if (a.isDirectory() && !b.isDirectory()) return -1;
+//           if (!a.isDirectory() && b.isDirectory()) return 1;
+//           return a.name.localeCompare(b.name);
+//         });
+//         console.table(sortedFiles.map((file, index) => ({
+//           Name: file.name,
+//           Type: file.isDirectory() ? 'directory' : 'file'
+//         })));
+
+export const createDirList = async () => {
+    try {
+        const currentDir = process.cwd();
+        const files = await readdir(currentDir, { withFileTypes: true });
+
+        const directory = files.map((file) => {
+            const name = file.name;
+            const type = file.isDirectory() ? 'directory' : 'file';
+            return {name, type};
+        });
+        const dirSorted = directory.sort((a, b) => {
+            if (a.type !== b.type) {
+                return a.type === 'directory' ? -1 : 1;
+            }
+            return a.name.localeCompare(b.name);
+        })
+        console.table(dirSorted);
+    } catch {
+        console.log('Operation failed');
+    }
+}
