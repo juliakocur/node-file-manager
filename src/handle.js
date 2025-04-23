@@ -1,11 +1,19 @@
 import { goUp, changeDirectory } from './directory.js';
 import { cat, addFile, addNewDir, renameFile, copyFile, moveFile, deleteFile,createDirList } from './commands.js';
 import { handleOs } from './os.js';
+import { createHashFile } from './hash.js';
 
 export const handleCommand = (input) => {
     const [command, ...args] = input.split(' ');
 
     switch (command) {
+        case 'hash':
+            if (args.length !== 1) {
+                throw new Error('Invalid input');
+            }
+            createHashFile(args[0]);
+            break;
+
         case 'os':
             if (args.length !== 1) {
                 throw new Error('Invalid input');

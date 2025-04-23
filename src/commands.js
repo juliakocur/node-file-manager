@@ -107,4 +107,4 @@ export const createDirList = async () => {
     } catch {
         console.log('Operation failed');
     }
-}
+};
