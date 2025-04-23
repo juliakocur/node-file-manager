@@ -2,11 +2,26 @@ import { goUp, changeDirectory } from './directory.js';
 import { cat, addFile, addNewDir, renameFile, copyFile, moveFile, deleteFile,createDirList } from './commands.js';
 import { handleOs } from './os.js';
 import { createHashFile } from './hash.js';
+import { compressAndDecompress } from './compress.js';
 
 export const handleCommand = (input) => {
     const [command, ...args] = input.split(' ');
 
     switch (command) {
+        case 'compress':
+            if (args.length !== 2) {
+                throw new Error('Invalid input');
+            }
+            compressAndDecompress('compress', args[0], args[1]);
+            break;
+
+        case 'decompress':
+            if (args.length !== 2) {
+                throw new Error('Invalid input');
+            }
+            compressAndDecompress('decompress', args[0], args[1]);
+            break;  
+        
         case 'hash':
             if (args.length !== 1) {
                 throw new Error('Invalid input');
