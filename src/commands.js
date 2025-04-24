@@ -21,13 +21,10 @@ export const cat = (filePath) => {
     }
 };
 
-export const addFile = (fileName) => {
+export const addFile = async (fileName) => {
     const filePath = path.resolve(process.cwd(), fileName);
     try {
-        if (fs.existsSync(filePath)) {
-            throw new Error()
-        }
-        writeFile(filePath, '', { flag: 'wx' }) 
+        await writeFile(filePath, '', { flag: 'wx' });
     } catch {
         console.log('Operation failed');
     }
@@ -57,9 +54,6 @@ export const copyFile = async (sourcePath, destPath) => {
     const filePath = path.isAbsolute(sourcePath) ? sourcePath : path.resolve(process.cwd(), sourcePath);
     const dest = path.isAbsolute(destPath) ? destPath : path.resolve(process.cwd(), destPath);
     try {
-        if (fs.existsSync(dest)) {
-            throw new Error()
-        }
         const readStream = fs.createReadStream(filePath);
         const writeStream = fs.createWriteStream(dest);
         await pipeline(readStream, writeStream);
